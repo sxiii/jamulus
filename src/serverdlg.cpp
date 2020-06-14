@@ -184,7 +184,10 @@ CServerDlg::CServerDlg ( CServer*        pNServP,
 
     // set text for version and application name
     lblNameVersion->setText ( QString ( APP_NAME ) +
-        tr ( " server " ) + QString ( VERSION ) );
+        tr ( " server " ) + QString ( VERSION )  +
+        tr ( " delay panning edition " ) );  
+		//**** modified for delay panning
+
 
     // set up list view for connected clients
     lvwClients->setColumnWidth ( 0, 170 );
@@ -288,6 +291,17 @@ lvwClients->setMinimumHeight ( 140 );
     ModifyAutoStartEntry ( bCurAutoStartMinState );
 #endif
 
+    //*******************************************************************
+	// update delay panning check box
+    if ( pServer->IsDelayPanningEnabled () )
+    {
+		chbEnableDelayPanning->setCheckState ( Qt::Checked );
+    }
+    else
+    {
+        chbEnableDelayPanning->setCheckState ( Qt::Unchecked );
+    }
+
     // Recorder controls
     if ( !pServer->GetRecorderInitialised() )
     {
@@ -346,6 +360,10 @@ lvwClients->setMinimumHeight ( 140 );
     QObject::connect ( chbEnableRecorder, &QCheckBox::stateChanged,
         this, &CServerDlg::OnEnableRecorderStateChanged );
 
+    //**************************** delay panning
+	QObject::connect ( chbEnableDelayPanning, &QCheckBox::stateChanged,
+        this, &CServerDlg::OnEnableDelayPanningStateChanged );
+		
     // line edits
     QObject::connect ( edtCentralServerAddress, &QLineEdit::editingFinished,
         this, &CServerDlg::OnCentralServerAddressEditingFinished );

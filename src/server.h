@@ -21,6 +21,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
  *
 \******************************************************************************/
+//******************************************************************************************
+//  Pan-Delay code added by Detlef Hennings, www.eclim.de,   2020-06
+//******************************************************************************************
 
 #pragma once
 
@@ -202,6 +205,10 @@ public:
     void RequestNewRecording();
     void SetEnableRecording ( bool bNewEnableRecording );
 
+	//**************************** delay panning
+	void SetEnableDelayPanning ( bool bDelayPanningOn ) { bDelayPan = bDelayPanningOn; }
+	bool IsDelayPanningEnabled () { return bDelayPan; }
+	
     // Server list management --------------------------------------------------
     void UpdateServerList() { ServerListManager.Update(); }
 
@@ -285,6 +292,7 @@ protected:
     void WriteHTMLChannelList();
 
     void ProcessData ( const CVector<CVector<int16_t> >& vecvecsData,
+                       const CVector<CVector<int16_t> >& vecvecsData2,   //***************  n200602
                        const CVector<double>&            vecdGains,
                        const CVector<double>&            vecdPannings,
                        const CVector<int>&               vecNumAudioChannels,
@@ -298,6 +306,10 @@ protected:
     bool                       bUseDoubleSystemFrameSize;
     int                        iServerFrameSizeSamples;
 
+	//*******************************************************************************
+	//  for delay panning      n200603
+	bool                       bDelayPan;  
+	
     bool CreateLevelsForAllConChannels  ( const int                        iNumClients,
                                           const CVector<int>&              vecNumAudioChannels,
                                           const CVector<CVector<int16_t> > vecvecsData,
@@ -330,6 +342,11 @@ protected:
     CVector<CVector<double> >  vecvecdGains;
     CVector<CVector<double> >  vecvecdPannings;
     CVector<CVector<int16_t> > vecvecsData;
+	//******************************************************************************************
+	//  second data buffer     vecvecsData2; // n200602
+	//******************************************************************************************
+    CVector<CVector<int16_t> > vecvecsData2;
+	
     CVector<int>               vecNumAudioChannels;
     CVector<int>               vecNumFrameSizeConvBlocks;
     CVector<int>               vecUseDoubleSysFraSizeConvBuf;
