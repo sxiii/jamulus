@@ -837,7 +837,7 @@ CAudioMixerBoard::CAudioMixerBoard ( QWidget* parent ) :
     QHBoxLayout* pGroupBoxLayout = new QHBoxLayout ( this );
     QWidget*     pMixerWidget    = new QWidget(); // will be added to the scroll area which is then the parent
     pScrollArea                  = new CMixerBoardScrollArea ( this );
-    pMainLayout                  = new QHBoxLayout ( pMixerWidget );
+    pMainLayout                  = new QGridLayout ( pMixerWidget );
 
     setAccessibleName ( "Personal Mix at the Server groupbox" );
     setWhatsThis ( "<b>" + tr ( "Personal Mix at the Server" ) + ":</b> " + tr (
@@ -861,7 +861,8 @@ CAudioMixerBoard::CAudioMixerBoard ( QWidget* parent ) :
     }
 
     // insert horizontal spacer
-    pMainLayout->addItem ( new QSpacerItem ( 0, 0, QSizePolicy::Expanding ) );
+    pMainLayout->addItem ( new QSpacerItem ( 0, 0, QSizePolicy::Expanding ), 0, 200 );
+    pMainLayout->addItem ( new QSpacerItem ( 0, 0, QSizePolicy::Expanding ), 1, 200 );
 
     // set margins of the layout to zero to get maximum space for the controls
     pGroupBoxLayout->setContentsMargins ( 0, 0, 0, 1 ); // note: to avoid problems at the bottom, use a small margin for that
@@ -1050,7 +1051,7 @@ void CAudioMixerBoard::ChangeFaderOrder ( const EChSortType eChSortType )
     // the widget from the layout first but it is moved to the new position automatically
     for ( int i = MAX_NUM_CHANNELS - 1; i >= 0; i-- )
     {
-        pMainLayout->insertWidget ( 0, vecpChanFader[PairList[i].second]->GetMainWidget() );
+        pMainLayout->addWidget ( vecpChanFader[PairList[i].second]->GetMainWidget(), i % 2, i / 2 );
     }
 }
 
@@ -1135,7 +1136,7 @@ void CAudioMixerBoard::ApplyNewConClientList ( CVector<CChannelInfo>& vecChanInf
                         // widget from the layout first but it is moved to the new position automatically
                         // and also note that the last layout item is the spacer, therefore we have
                         // to insert at position "count - 2"
-                        pMainLayout->insertWidget ( pMainLayout->count() - 2, vecpChanFader[i]->GetMainWidget() );
+                        pMainLayout->addWidget ( vecpChanFader[i]->GetMainWidget(), 0, pMainLayout->columnCount() - 2 );
                     }
 
                     // restore gain (if new name is different from the current one)

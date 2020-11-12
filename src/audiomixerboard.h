@@ -247,7 +247,7 @@ protected:
     CClientSettings*        pSettings;
     CVector<CChannelFader*> vecpChanFader;
     CMixerBoardScrollArea*  pScrollArea;
-    QHBoxLayout*            pMainLayout;
+    QGridLayout*            pMainLayout;
     bool                    bDisplayPans;
     bool                    bIsPanSupported;
     bool                    bNoFaderVisible;
