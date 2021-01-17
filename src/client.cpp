@@ -622,8 +622,11 @@ void CClient::OnSndCrdReinitRequest ( int iSndCrdResetType )
 
     // audio device notifications can come at any time and they are in a
     // different thread, therefore we need a mutex here
+qDebug() << "before MutexDriverReinit lock";
     MutexDriverReinit.lock();
     {
+qDebug() << "after MutexDriverReinit lock";
+
         // in older QT versions, enums cannot easily be used in signals without
         // registering them -> workaroud: we use the int type and cast to the enum
         const ESndCrdResetType eSndCrdResetType =
@@ -634,14 +637,17 @@ void CClient::OnSndCrdReinitRequest ( int iSndCrdResetType )
         const bool bWasRunning = Sound.IsRunning();
         if ( bWasRunning )
         {
+qDebug() << "1";
             Sound.Stop();
         }
 
         // perform reinit request as indicated by the request type parameter
         if ( eSndCrdResetType != RS_ONLY_RESTART )
         {
+qDebug() << "2";
             if ( eSndCrdResetType != RS_ONLY_RESTART_AND_INIT )
             {
+qDebug() << "3";
                 // reinit the driver if requested
                 // (we use the currently selected driver)
                 strError = Sound.SetDev ( Sound.GetDev() );
@@ -650,15 +656,18 @@ void CClient::OnSndCrdReinitRequest ( int iSndCrdResetType )
             // init client object (must always be performed if the driver
             // was changed)
             Init();
+qDebug() << "4";
         }
 
         if ( bWasRunning )
         {
+qDebug() << "5";
             // restart client
             Sound.Start();
         }
     }
     MutexDriverReinit.unlock();
+qDebug() << "after MutexDriverReinit unlock";
 
     // inform GUI about the sound card device change
     emit SoundDeviceChanged ( strError );

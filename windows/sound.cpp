@@ -408,28 +408,34 @@ _exit(1);
 
 int CSound::Init ( const int iNewPrefMonoBufferSize )
 {
+
+qDebug() << "before Init ASIOMutex.lock()";
+
     ASIOMutex.lock(); // get mutex lock
     {
+
+qDebug() << "after Init ASIOMutex.lock()";
+
         // get the actual sound card buffer size which is supported
         // by the audio hardware
         iASIOBufferSizeMono = GetActualBufferSize ( iNewPrefMonoBufferSize );
-
+qDebug() << "c1";
         // init base class
         CSoundBase::Init ( iASIOBufferSizeMono );
-
+qDebug() << "c2";
         // set internal buffer size value and calculate stereo buffer size
         iASIOBufferSizeStereo = 2 * iASIOBufferSizeMono;
 
         // set the sample rate
         ASIOSetSampleRate ( SYSTEM_SAMPLE_RATE_HZ );
-
+qDebug() << "c3";
         // create memory for intermediate audio buffer
         vecsMultChanAudioSndCrd.Init ( iASIOBufferSizeStereo );
 
         // create and activate ASIO buffers (buffer size in samples),
         // dispose old buffers (if any)
         ASIODisposeBuffers();
-
+qDebug() << "c4";
         // prepare input channels
         for ( int i = 0; i < lNumInChan; i++ )
         {
@@ -448,9 +454,11 @@ int CSound::Init ( const int iNewPrefMonoBufferSize )
             bufferInfos[lNumInChan + i].buffers[1] = 0;
         }
 
+qDebug() << lNumInChan << lNumOutChan << iASIOBufferSizeMono;
+
         ASIOCreateBuffers ( bufferInfos, lNumInChan + lNumOutChan,
                             iASIOBufferSizeMono, &asioCallbacks );
-
+qDebug() << "c5";
         // query the latency of the driver
         long lInputLatency  = 0;
         long lOutputLatency = 0;
@@ -468,13 +476,13 @@ int CSound::Init ( const int iNewPrefMonoBufferSize )
             // no latency available
             fInOutLatencyMs = 0.0f;
         }
-
+qDebug() << "c6";
         // check whether the driver requires the ASIOOutputReady() optimization
         // (can be used by the driver to reduce output latency by one block)
         bASIOPostOutput = ( ASIOOutputReady() == ASE_OK );
     }
     ASIOMutex.unlock();
-
+qDebug() << "after Init ASIOMutex.unlock()";
     return iASIOBufferSizeMono;
 }
 
@@ -497,8 +505,10 @@ void CSound::Stop()
 
     // make sure the working thread is actually done
     // (by checking the locked state)
+qDebug() << "before Stop ASIOMutex.tryLock()";
     if ( ASIOMutex.tryLock ( 5000 ) )
     {
+qDebug() << "after Stop ASIOMutex.tryLock()";
         ASIOMutex.unlock();
     }
 }
@@ -624,9 +634,12 @@ void CSound::bufferSwitch ( long index, ASIOBool )
     int&              iASIOBufferSizeMono     = pSound->iASIOBufferSizeMono;
     CVector<int16_t>& vecsMultChanAudioSndCrd = pSound->vecsMultChanAudioSndCrd;
 
+//qDebug() << "before bufferSwitch ASIOMutex.lock()";
     // perform the processing for input and output
     pSound->ASIOMutex.lock(); // get mutex lock
     {
+
+//        qDebug() << "after bufferSwitch ASIOMutex.lock()";
         // CAPTURE -------------------------------------------------------------
         for ( int i = 0; i < NUM_IN_OUT_CHANNELS; i++ )
         {
