@@ -6,6 +6,8 @@ Jamulus - Internet Jam Session Software
 =======================================
 <a href="https://jamulus.io/"><img align="left" src="src/res/homepage/mediawikisidebarlogo.png"/></a>
 
+**NOTE: this is the eduTools branch implementing a basic waiting room feature etc. THIS IS NOT OFFICIAL IN ANY TERMS** 
+
 The Jamulus software enables musicians to perform real-time jam sessions over the internet.
 There is one server running the Jamulus server software which collects the audio data from
 each Jamulus client, mixes the audio data and sends the mix back to each client.
