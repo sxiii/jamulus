@@ -1,0 +1,16 @@
+---
+application:
+  name: "jamulus"
+  project: "jamulus"
+  organization: "QoveryCommunity"
+  storage:
+  - name: "test"
+    size: "10"
+    type: "fast_ssd"
+    mount_point: "/mnt/test"
+routers:
+- name: "main-jamulus"
+  routes:
+  - application_name: "jamulus"
+    paths:
+    - "/*"
